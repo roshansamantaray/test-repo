@@ -8,11 +8,6 @@ permissions:
 on:
   workflow_call:
     inputs:
-#      workflow_name:
-#        required: false
-#        type: string
-#        default: "Reusable Documentation Deployment"
-
       deploy_branch:
         required: true
         type: string
@@ -72,6 +67,20 @@ jobs:
         if: github.event_name == 'push' && github.base_ref == 'develop'
         run: mike deploy develop --push --update-aliases develop latest
 
+      - name: Determine Version
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            VERSION=${{ inputs.version }}
+          elif [ "${{ inputs.version_source }}" == "maven" ]; then
+            VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed "s/[^a-zA-Z0-9._-]/_/g")
+          elif [ "${{ inputs.version_source }}" == "gradle" ]; then
+            VERSION=$(gradle properties | grep "^version:" | awk '{print $2}')
+          else
+            echo "Unknown version source, using provided version: ${{ inputs.version }}"
+            VERSION=${{ inputs.version }}
+          fi
+          echo "DOC_VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Deploy Doc Version for New Release
         if: github.event_name == 'push' && github.base_ref == 'master'
-        run: mike deploy "$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed "s/[^a-zA-Z0-9._-]/_/g" )" --push
+        run: mike deploy "${{ env.DOC_VERSION }}" --push

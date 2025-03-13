@@ -22,7 +22,10 @@ on:
         type: boolean
         default: true
 
-
+      version:
+        required: false
+        type: string
+        default: "latest"
 
 jobs:
   manage:

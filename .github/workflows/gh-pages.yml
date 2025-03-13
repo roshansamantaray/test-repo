@@ -22,6 +22,11 @@ on:
         type: string
         default: "latest"
 
+      version_source:
+        required: false
+        string: type
+        default: "maven"
+
 jobs:
   manage:
     runs-on: ubuntu-latest

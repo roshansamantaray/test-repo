@@ -1,4 +1,4 @@
-name: ${{ inputs.workflow_name || 'Reusable Documentation Deployment' }}
+name: Reusable Documentation Deployment
 
 permissions:
   contents: write
@@ -8,10 +8,10 @@ permissions:
 on:
   workflow_call:
     inputs:
-      workflow_name:
-        required: false
-        type: string
-        default: "Reusable Documentation Deployment"
+#      workflow_name:
+#        required: false
+#        type: string
+#        default: "Reusable Documentation Deployment"
 
       deploy_branch:
         required: true
